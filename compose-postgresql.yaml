@@ -1,0 +1,22 @@
+services:
+  udaring-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: udaring-database
+    volumes:
+      - type: volume
+        source: fm-database-persistent-data
+        target: /var/lib/mysql
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      my-application-network:
+networks:
+  my-application-network:
+volumes:
+  udaring-volume:
