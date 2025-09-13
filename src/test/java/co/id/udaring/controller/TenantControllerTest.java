@@ -56,7 +56,7 @@ class TenantControllerTest {
                 .build();
         when(tenantService.registerTenant(any(TenantCreateRequest.class))).thenReturn(tenant);
 
-        mockMvc.perform(post("/tenant/register")
+        mockMvc.perform(post("/api/v1/tenant/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(validRequest)))
                 .andExpect(status().isOk())
@@ -67,7 +67,7 @@ class TenantControllerTest {
     void registerTenant_shouldReturnBadRequest_whenRequestHasInvalidEmail() throws Exception {
         TenantCreateRequest invalidRequest = new TenantCreateRequest("", "invalid-email", "");
 
-        mockMvc.perform(post("/tenant/register")
+        mockMvc.perform(post("/api/v1/tenant/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest())
@@ -75,7 +75,7 @@ class TenantControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Invalid parameters"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(400))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.detail").value("Invalid request content."))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.instance").value("/tenant/register"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.instance").value("/api/v1/tenant/register"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.errors[*]", Matchers.containsInAnyOrder(
                         Matchers.allOf(
                                 Matchers.hasEntry("detail", "must be a well-formed email address"),

@@ -3,6 +3,7 @@ package co.id.udaring.service;
 import co.id.udaring.dto.tenant.TenantCreateRequest;
 import co.id.udaring.entity.Tenant;
 import co.id.udaring.repository.TenantRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -40,13 +41,11 @@ class TenantServiceTest {
 
         final var expectedCreatedDate = LocalDateTime.now();
         final var expectedId = UUID.randomUUID();
-        final var expectedEncodedPassword = "encodedPassword";
-        Mockito.when(passwordEncoder.encode(request.password())).thenReturn(expectedEncodedPassword);
 
         Mockito.when(tenantRepository.save(Mockito.any(Tenant.class)))
                 .thenAnswer(invocation -> {
                     Tenant tenant = invocation.getArgument(0);
-                    tenant.setId(expectedId);
+                    tenant.setTableId(expectedId);
                     tenant.setCreatedDate(expectedCreatedDate);
                     return tenant;
                 });
@@ -61,8 +60,8 @@ class TenantServiceTest {
 
         assertThat(actualTenant.getTenantName()).isEqualTo(request.tenantName());
         assertThat(actualTenant.getEmail()).isEqualTo(request.email());
-        assertThat(actualTenant.getId()).isEqualTo(expectedId);
+        assertThat(actualTenant.getTableId()).isEqualTo(expectedId);
         assertThat(actualTenant.getCreatedDate()).isEqualTo(expectedCreatedDate);
-        assertThat(actualTenant.getPassword()).isEqualTo(expectedEncodedPassword.getBytes());
+        Assertions.assertDoesNotThrow(() -> actualTenant.validatePassword(request.password()));
     }
 }
