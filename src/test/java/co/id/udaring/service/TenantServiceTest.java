@@ -1,6 +1,6 @@
 package co.id.udaring.service;
 
-import co.id.udaring.dto.TenantCreateRequest;
+import co.id.udaring.dto.tenant.TenantCreateRequest;
 import co.id.udaring.entity.Tenant;
 import co.id.udaring.repository.TenantRepository;
 import org.junit.jupiter.api.BeforeEach;

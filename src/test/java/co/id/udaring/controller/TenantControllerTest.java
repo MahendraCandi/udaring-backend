@@ -1,6 +1,6 @@
 package co.id.udaring.controller;
 
-import co.id.udaring.dto.TenantCreateRequest;
+import co.id.udaring.dto.tenant.TenantCreateRequest;
 import co.id.udaring.entity.Tenant;
 import co.id.udaring.exception.GlobalExceptionHandler;
 import co.id.udaring.service.TenantService;

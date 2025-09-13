@@ -1,4 +1,4 @@
-package co.id.udaring.dto;
+package co.id.udaring.dto.tenant;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

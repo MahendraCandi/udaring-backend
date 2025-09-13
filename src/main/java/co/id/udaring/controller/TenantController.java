@@ -1,7 +1,8 @@
 package co.id.udaring.controller;
 
-import co.id.udaring.dto.TenantCreateRequest;
-import co.id.udaring.dto.TenantResponseDTO;
+import co.id.udaring.dto.tenant.TenantCreateRequest;
+import co.id.udaring.dto.tenant.TenantLoginRequest;
+import co.id.udaring.dto.tenant.TenantResponseDTO;
 import co.id.udaring.service.TenantService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
