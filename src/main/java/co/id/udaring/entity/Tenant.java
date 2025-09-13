@@ -41,6 +41,10 @@ public class Tenant {
         if (tenantId == null) {
             this.tenantId = RandomKeyGenerator.randomKey(12);
         }
+
+        if (createdDate == null) {
+            this.createdDate = LocalDateTime.now();
+        }
     }
 
     public void setPassword(PasswordEncoder passwordEncoder, String password) {

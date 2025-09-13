@@ -8,7 +8,7 @@ services:
       POSTGRES_DB: udaring-database
     volumes:
       - type: volume
-        source: fm-database-persistent-data
+        source: udaring-volume
         target: /var/lib/mysql
     expose:
       - 5432
