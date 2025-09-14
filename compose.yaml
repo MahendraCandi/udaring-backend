@@ -40,6 +40,7 @@ services:
       ACCESS_TOKEN_ISSUER: "app.co.id"
       REFRESH_TOKEN_DURATION: "3d"
       REFRESH_TOKEN_SECRET: "refresh-secret"
+      TZ: Asia/Jakarta
 networks:
   my-application-network:
 volumes:
