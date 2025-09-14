@@ -35,6 +35,11 @@ services:
       DB_URL: "jdbc:postgresql://udaring-db:5432/udaring_database"
       DB_USER: "user"
       DB_PASSWORD: "password"
+      ACCESS_TOKEN_DURATION: "60m"
+      ACCESS_TOKEN_SECRET: "access-secret"
+      ACCESS_TOKEN_ISSUER: "app.co.id"
+      REFRESH_TOKEN_DURATION: "3d"
+      REFRESH_TOKEN_SECRET: "refresh-secret"
 networks:
   my-application-network:
 volumes:
