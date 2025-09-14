@@ -1,6 +1,8 @@
 package co.id.udaring.entity;
 
+import co.id.udaring.entity.entitytype.EntityTypeOperation;
 import co.id.udaring.exception.AuthenticationException;
+import co.id.udaring.entity.entitytype.EntityType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -19,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Tenant {
+public class Tenant implements EntityTypeOperation {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID tableId; // the table key
@@ -52,6 +54,11 @@ public class Tenant {
         if (!TenantUtil.matchingPassword(rawPassword, this.password)) {
             throw new AuthenticationException();
         }
+    }
+
+    @Override
+    public EntityType getEntityType() {
+        return EntityType.TENANT;
     }
 
     private static class TenantUtil {

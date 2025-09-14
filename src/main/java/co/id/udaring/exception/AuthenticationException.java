@@ -5,7 +5,11 @@ import org.springframework.web.ErrorResponseException;
 
 public class AuthenticationException extends ErrorResponseException {
     public AuthenticationException() {
+        this("Invalid credentials");
+    }
+
+    public AuthenticationException(String message) {
         super(HttpStatus.FORBIDDEN);
-        this.setDetail("Invalid credentials");
+        this.setDetail(message);
     }
 }
