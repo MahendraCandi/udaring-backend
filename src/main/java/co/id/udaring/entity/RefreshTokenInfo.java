@@ -1,7 +1,8 @@
 package co.id.udaring.entity;
 
-import co.id.udaring.util.Constant;
+import co.id.udaring.config.TokenConfiguration;
 import co.id.udaring.entity.entitytype.EntityType;
+import co.id.udaring.util.Constant;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import jakarta.persistence.Entity;
@@ -11,10 +12,8 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-import java.time.Instant;
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Getter
@@ -41,26 +40,27 @@ public class RefreshTokenInfo {
         this.entityType = entityType;
     }
 
-    public static RefreshTokenInfo from(Tenant tenant) {
-        return from(tenant.getTableId(), tenant.getEntityType());
+    public static RefreshTokenInfo from(Tenant tenant, TokenConfiguration.RefreshToken refreshTokenConfig) {
+        return from(tenant.getTableId(), tenant.getEntityType(), refreshTokenConfig.getDuration(), refreshTokenConfig.getSecret());
     }
 
-    private static RefreshTokenInfo from(UUID id, EntityType entityType) {
-        final var expiresAt = Constant.INSTANT_NOW.plus(3, ChronoUnit.DAYS);
-        final var refreshToken = createToken(id, expiresAt);
-        return new RefreshTokenInfo(id, refreshToken, LocalDateTime.ofInstant(expiresAt, ZoneId.systemDefault()), entityType);
+    private static RefreshTokenInfo from(UUID id, EntityType entityType, Duration expiresDuration, String refreshTokenSecret) {
+        final var refreshTokenDuration = LocalDateTime.now().plus(expiresDuration);
+        final var refreshToken = createRefreshToken(id, refreshTokenDuration, refreshTokenSecret);
+        return new RefreshTokenInfo(id, refreshToken, refreshTokenDuration, entityType);
     }
 
-    private static String createToken(UUID id, Instant expiresAt) {
+    public void rotateToken(TokenConfiguration.RefreshToken refreshTokenConfig) {
+        final var refreshTokenDuration = LocalDateTime.now().plus(refreshTokenConfig.getDuration());
+        final var token = createRefreshToken(this.id, refreshTokenDuration, refreshTokenConfig.getSecret());
+        this.refreshToken = token.getBytes();
+    }
+
+    private static String createRefreshToken(UUID id, LocalDateTime expiresAt, String refreshTokenSecret) {
         return JWT.create()
                 .withSubject(id.toString())
-                .withExpiresAt(expiresAt)
-                .sign(Algorithm.HMAC256("secret")); // todo change me to properties
-    }
-
-    public void rotateToken() {
-        final var token = createToken(this.id, Constant.toInstant(this.expiresAt));
-        this.refreshToken = token.getBytes();
+                .withExpiresAt(Constant.toInstant(expiresAt))
+                .sign(Algorithm.HMAC256(refreshTokenSecret));
     }
 
     public String getToken() {
