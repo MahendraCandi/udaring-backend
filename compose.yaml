@@ -1,0 +1,41 @@
+services:
+  udaring-db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: udaring_database
+    volumes:
+      - type: volume
+        source: udaring-volume
+        target: /var/lib/mysql
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      my-application-network:
+    healthcheck:
+      test: [ "CMD-SHELL", "sh -c 'pg_isready -U user -d udaring_database'" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+  udaring-backend:
+    build: .
+    image: udaring-backend:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      udaring-db:
+        condition: service_healthy
+    networks:
+      my-application-network:
+    environment:
+      DB_URL: "jdbc:postgresql://udaring-db:5432/udaring_database"
+      DB_USER: "user"
+      DB_PASSWORD: "password"
+networks:
+  my-application-network:
+volumes:
+  udaring-volume:
