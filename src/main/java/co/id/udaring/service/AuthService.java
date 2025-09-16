@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import static co.id.udaring.util.Constant.*;
@@ -76,8 +77,11 @@ public class AuthService {
         final var requestedRefreshToken = bearerToken.replace("Bearer ", "");
         try {
             final var jwt = JWT.decode(requestedRefreshToken);
-
-            if (LocalDateTime.now().isAfter(LocalDateTime.ofInstant(jwt.getExpiresAtAsInstant(), ZoneId.systemDefault()))) {
+            final var now = LocalDateTime.now();
+            final var expirationDateTime = LocalDateTime.ofInstant(jwt.getExpiresAtAsInstant(), ZoneId.systemDefault());
+            System.out.println(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
+            System.out.println(expirationDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")));
+            if (now.isAfter(expirationDateTime)) {
                 throw new AuthenticationException("Access token has expired");
             }
         } catch (IllegalArgumentException | JWTDecodeException e) {
