@@ -28,4 +28,12 @@ public class AuthController {
             @RequestHeader(name = "Authorization") String bearerToken) {
         return authService.refreshToken(bearerToken);
     }
+
+    @Operation(security = @SecurityRequirement(name = "bearerAuth"))
+    @PostMapping("/test/token")
+    public void testValidateToken(
+            @RequestHeader(name = "Authorization") String bearerToken
+    ) {
+        authService.testValidateToken(bearerToken);
+    }
 }

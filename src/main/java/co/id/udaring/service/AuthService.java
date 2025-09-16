@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import static co.id.udaring.util.Constant.*;
@@ -69,6 +70,19 @@ public class AuthService {
         }
 
         throw new UnsupportedOperationException("Unsupported entity type");
+    }
+
+    public void testValidateToken(String bearerToken) {
+        final var requestedRefreshToken = bearerToken.replace("Bearer ", "");
+        try {
+            final var jwt = JWT.decode(requestedRefreshToken);
+
+            if (LocalDateTime.now().isAfter(LocalDateTime.ofInstant(jwt.getExpiresAtAsInstant(), ZoneId.systemDefault()))) {
+                throw new AuthenticationException("Access token has expired");
+            }
+        } catch (IllegalArgumentException | JWTDecodeException e) {
+            throw new AuthenticationException("Invalid refresh token");
+        }
     }
 
     private RefreshTokenInfo findRefreshTokenInfo(String requestedRefreshToken) {
